@@ -7,7 +7,7 @@ import (
 	"github.com/ChimeraCoder/anaconda"
 	"io/ioutil"
 	"net/url"
-	"reflect"
+	//"reflect"
 	"time"
 )
 
@@ -26,6 +26,9 @@ func check(e error) {
 }
 
 func main() {
+	fmt.Println("----------------------------------")
+	fmt.Println("|       Tweet Sweeper v1.0       |")
+	fmt.Println("----------------------------------")
 
 	var apiConf ApiConf
 	{
@@ -49,17 +52,15 @@ func main() {
 		switch status := t.(type) {
 		case anaconda.Tweet:
 			if status.User.ScreenName == apiConf.YourAccountName {
-				fmt.Println(status.Text)
-				fmt.Println(status.Id)
 				go func() {
+					fmt.Printf("「%s」を5分後に消します。\n", status.Text)
 					// 5分後に削除
 					time.Sleep(5 * time.Minute)
 					tw, _ := client.DeleteTweet(status.Id, true)
-					fmt.Println(tw.Text)
+					fmt.Printf("「%s」を消しました。\n", tw.Text)
 				}()
 			}
 		default:
-			fmt.Println(reflect.TypeOf(status))
 		}
 	}
 }
